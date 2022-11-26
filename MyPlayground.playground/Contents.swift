@@ -200,9 +200,74 @@ func countNodesTest() {
 
 /* ========================================================================= */
 
+// 104. Maximum Depth of Binary Tree
+// https://leetcode.com/problems/maximum-depth-of-binary-tree/
+
+class MaxDepth {
+    public class TreeNode {
+      public var val: Int
+      public var left: TreeNode?
+      public var right: TreeNode?
+      public init() { self.val = 0; self.left = nil; self.right = nil; }
+      public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+      public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+          self.val = val
+          self.left = left
+          self.right = right
+      }
+    }
+    
+    func solution1(_ root: TreeNode?) -> Int {
+        guard let root = root else {
+            return 0
+        }
+        
+        let leftDepth = solution1(root.left)
+        let rightDepth = solution1(root.right)
+        return (leftDepth > rightDepth ? leftDepth : rightDepth) + 1
+    }
+}
+
+func testMaxDepth() {
+    print("test maxDepth:");
+    
+    do {
+        let n1 = MaxDepth.TreeNode(1, nil, nil)
+        
+        print("case 0: ", MaxDepth().solution1(n1)) // 1
+    }
+    do {
+        print("case 1: ", MaxDepth().solution1(nil)) // 0
+    }
+    do {
+        print("case 2: ", MaxDepth().solution1(nil)) // 0
+    }
+    do {
+        let n5 = MaxDepth.TreeNode(5, nil, nil)
+        let n4 = MaxDepth.TreeNode(4, nil, nil)
+        let n3 = MaxDepth.TreeNode(3, nil, nil)
+        let n2 = MaxDepth.TreeNode(2, n4, n5)
+        let n1 = MaxDepth.TreeNode(1, n2, n3)
+        
+        print("case 3: ", MaxDepth().solution1(n1)) // 3
+    }
+    do {
+        let n5 = MaxDepth.TreeNode(7, nil, nil)
+        let n4 = MaxDepth.TreeNode(15, nil, nil)
+        let n3 = MaxDepth.TreeNode(20, n4, n5)
+        let n2 = MaxDepth.TreeNode(9, nil, nil)
+        let n1 = MaxDepth.TreeNode(3, n2, n3)
+        
+        print("case 4: ", MaxDepth().solution1(n1)) // 3
+    }
+}
+
+/* ========================================================================= */
+
 var greeting = "Hello, player"
 
 print(greeting)
 
 //twoSumTest()
-countNodesTest()
+//countNodesTest()
+testMaxDepth()
