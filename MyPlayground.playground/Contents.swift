@@ -473,6 +473,73 @@ func testTrap() {
 
 /* ========================================================================= */
 
+// 2. Add Two Numbers
+// https://leetcode.com/problems/add-two-numbers/
+
+class AddTwoNumbers {
+    public class ListNode {
+        public var val: Int
+        public var next: ListNode?
+        public var description: String { get{ return "\(val), \(next?.description ?? "")" } }
+        public init() { self.val = 0; self.next = nil; }
+        public init(_ val: Int) { self.val = val; self.next = nil; }
+        public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+    }
+    
+    func listAdd(_ l: ListNode?, _ r: ListNode?, _ carry: Int) -> ListNode? {
+        if l == nil && r == nil {
+            if carry > 0 {
+                return ListNode(carry)
+            }
+            return nil;
+        }
+        
+        let sum = (l ?? ListNode(0)).val + (r ?? ListNode(0)).val + carry
+        
+        return ListNode(sum % 10,
+                        listAdd(l?.next, r?.next, sum / 10))
+    }
+    
+    func solution1(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        return listAdd(l1, l2, 0)
+    }
+    
+    func testAddTwoNumbers() {
+        print("test addTwoNumbers:");
+        
+        do {
+            print(solution1(nil, nil)?.description ?? "nothing") // nothing
+            print(solution1(ListNode(0), nil)?.description ?? "nothing") // 0,
+            print(solution1(ListNode(1), nil)?.description ?? "nothing") // 1,
+            print(solution1(nil, ListNode(1))?.description ?? "nothing") // 1,
+            print(solution1(ListNode(0), ListNode(0))?.description ?? "nothing") // 0,
+            print(solution1(ListNode(0), ListNode(1))?.description ?? "nothing") // 1,
+            print(solution1(ListNode(1), ListNode(0))?.description ?? "nothing") // 1,
+            print(solution1(ListNode(1), ListNode(1))?.description ?? "nothing") // 2,
+        }
+        
+        do {
+            let l1 = ListNode(3, ListNode(2, ListNode(1)))
+            let l2 = ListNode(6, ListNode(5, ListNode(4)))
+            print(solution1(l1, l2)?.description ?? "nothing") // 9, 7, 5
+        }
+        
+        do {
+            let l1 = ListNode(1)
+            let l2 = ListNode(9, ListNode(1))
+            print(solution1(l1, l2)?.description ?? "nothing") // 0, 2
+        }
+        
+        do {
+            let l1 = ListNode(1)
+            let l2 = ListNode(9, ListNode(9))
+            print(solution1(l1, l2)?.description ?? "nothing") // 0, 0, 1
+        }
+    }
+}
+
+/* ========================================================================= */
+
 var greeting = "Hello, player"
 
 print(greeting)
