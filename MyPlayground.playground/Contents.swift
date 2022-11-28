@@ -264,6 +264,65 @@ func testMaxDepth() {
 
 /* ========================================================================= */
 
+// 121. Best Time to Buy and Sell Stock
+// https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+
+class MaxProfit {
+    
+    // T=O(N^2), S=O(1) (excluding the input array)
+    func solution1(_ prices: [Int]) -> Int {
+        var globalMax = 0
+        for i in prices.indices {
+            var localMax = 0
+            for j in i..<prices.count {
+                if prices[j] - prices[i] > localMax {
+                    localMax = prices[j] - prices[i]
+                }
+            }
+            
+            if localMax > globalMax {
+                globalMax = localMax
+            }
+        }
+        
+        return globalMax
+    }
+    
+    // T=O(N), S=O(1) (excluding the input array)
+    func solution2(_ prices: [Int]) -> Int {
+        guard prices.count > 1 else {
+            return 0
+        }
+        
+        var left = 0, right = 1, maxProfit = 0
+        while right < prices.count {
+            var profit = prices[right] - prices[left]
+            if profit < 0 {
+                left = right
+                right += 1
+            } else {
+                maxProfit = max(maxProfit, profit)
+                right += 1
+            }
+        }
+        
+        return maxProfit
+    }
+}
+
+func testMaxProfit() {
+    print("test maxProfit:");
+    
+    print(MaxProfit().solution2([])) // 0
+    print(MaxProfit().solution2([1, 3, 5])) // 4
+    print(MaxProfit().solution2([1, 2])) // 1
+    print(MaxProfit().solution2([1, 5, 3])) // 4
+    print(MaxProfit().solution2([3, 5, 1])) // 2
+    print(MaxProfit().solution2([1, 5, 3, 6])) // 5
+    print(MaxProfit().solution2([4, 5, 3, 7])) // 4
+}
+/* ========================================================================= */
+
 var greeting = "Hello, player"
 
 print(greeting)
