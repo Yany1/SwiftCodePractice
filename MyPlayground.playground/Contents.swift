@@ -369,6 +369,110 @@ func testCoinChange() {
 
 /* ========================================================================= */
 
+// 42. Trapping Rain Water
+// https://leetcode.com/problems/trapping-rain-water/
+
+class Trap {
+    func countTrappedRain(_ map: [Int]) -> Int {
+        let bucketHeight = min(map.first!, map.last!)
+        var amount = 0
+        for height in map {
+            amount += max(0, bucketHeight - height)
+        }
+        
+        return amount
+    }
+    
+    func solution1(_ height: [Int]) -> Int {
+        guard height.count > 2 else {
+            return 0
+        }
+        
+        var total = 0
+        var maxLeft = 0, maxRight = 0
+        for i in height.indices {
+            maxLeft = height[0...i].reduce(into: maxLeft) { result, h in
+                result = max(result, h)
+            }
+            maxRight = height[i..<height.count].reduce(into: maxRight) { result, h in
+                result = max(result, h)
+            }
+            total += max(0, min(maxLeft, maxRight) - height[i])
+            maxLeft = 0; maxRight = 0
+        }
+        
+        return total
+    }
+    
+    func solution2(_ height: [Int]) -> Int {
+        guard height.count > 1 else {
+            return 0
+        }
+        
+        var total = 0
+        var maxLeft = Array<Int>(repeating: 0, count: height.count), maxRight = Array<Int>(repeating: 0, count: height.count)
+        
+        let n = height.count - 1
+        maxLeft[0] = height[0]
+        maxRight[n] = height[n]
+        for i in 1..<height.count {
+            maxLeft[i] = max(maxLeft[i - 1], height[i])
+            maxRight[n - i] = max(maxRight[n - i + 1], height[n - i])
+        }
+        
+        for i in height.indices {
+            total += max(0, min(maxLeft[i], maxRight[i]) - height[i])
+        }
+        
+        return total
+    }
+    
+    func solution3(_ height: [Int]) -> Int {
+        guard height.count > 0 else {
+            return 0
+        }
+        
+        var total = 0
+        var left = 0, right = height.count - 1
+        var maxLeft = 0, maxRight = 0
+        
+        while left < right {
+            if height[left] < height[right] {
+                if height[left] >= maxLeft {
+                    maxLeft = height[left]
+                } else {
+                    total += maxLeft - height[left]
+                }
+                left += 1
+            } else {
+                if height[right] >= maxRight {
+                    maxRight = height[right]
+                } else {
+                    total += maxRight - height[right]
+                }
+                right -= 1
+            }
+        }
+        
+        return total
+    }
+}
+
+func testTrap() {
+    print("test trap:");
+    
+    print(Trap().solution3([])) // 0
+    print(Trap().solution3([10])) // 0
+    print(Trap().solution3([2, 5])) // 0
+    print(Trap().solution3([5, 2])) // 0
+    print(Trap().solution3([2, 5, 3])) // 0
+    print(Trap().solution3([3, 2, 5])) // 1
+    print(Trap().solution3([0,1,0,2,1,0,1,3,2,1,2,1])) // 6
+    print(Trap().solution3([4,2,0,3,2,5])) // 9
+}
+
+/* ========================================================================= */
+
 var greeting = "Hello, player"
 
 print(greeting)
