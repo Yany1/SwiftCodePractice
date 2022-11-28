@@ -321,6 +321,52 @@ func testMaxProfit() {
     print(MaxProfit().solution2([1, 5, 3, 6])) // 5
     print(MaxProfit().solution2([4, 5, 3, 7])) // 4
 }
+
+/* ========================================================================= */
+
+// 322. Coin Change
+// https://leetcode.com/problems/coin-change/
+
+class CoinChange {
+    
+    // T=O(N*M), S=O(N) (Assuming coins.count = M, amount = N)
+    func solution1(_ coins: [Int], _ amount: Int) -> Int {
+        guard coins.count > 0 && amount >= 0 else {
+            return -1
+        }
+        if amount == 0 {
+            return 0
+        }
+        
+        var results = Array<Int>(repeating: -1, count: amount + 1)
+        results[0] = 0
+        for i in 1...amount {
+            var numberOfChanges = Int.max
+            for coin in coins {
+                if coin <= i && results[i - coin] >= 0 {
+                    numberOfChanges = min(numberOfChanges, results[i - coin] + 1)
+                    results[i] = numberOfChanges
+                }
+            }
+        }
+        
+        return results[amount]
+    }
+}
+
+func testCoinChange() {
+    print("test coinChange:");
+    
+    print(CoinChange().solution1([], 0)) // -1
+    print(CoinChange().solution1([1], -1)) // -1
+    print(CoinChange().solution1([1], 0)) // 0
+    print(CoinChange().solution1([2], 3)) // -1
+    print(CoinChange().solution1([1, 2, 5], 11)) // 3
+    print(CoinChange().solution1([1, 3, 4], 5)) // 2
+    print(CoinChange().solution1([1, 3, 4], 6)) // 2
+    print(CoinChange().solution1([1, 2, 5], 8)) // 3
+}
+
 /* ========================================================================= */
 
 var greeting = "Hello, player"
