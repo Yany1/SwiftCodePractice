@@ -500,40 +500,59 @@ class AddTwoNumbers {
                         listAdd(l?.next, r?.next, sum / 10))
     }
     
+    // T=O(N), S=O(N)
     func solution1(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
         return listAdd(l1, l2, 0)
+    }
+    
+    // T=O(N), S=O(1)
+    func solution2(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        var carry = 0
+        var node: ListNode? = ListNode(), sum = node
+        var l1 = l1, l2 = l2
+        while l1 != nil || l2 != nil || carry > 0 {
+            var sum = ((l1?.val ?? 0) + (l2?.val ?? 0)) + carry
+            node?.next = ListNode(sum % 10)
+            carry = sum / 10
+            
+            node = node?.next
+            l1 = l1?.next
+            l2 = l2?.next
+        }
+        
+        return sum?.next
     }
     
     func test() {
         print("test addTwoNumbers:");
         
         do {
-            print(solution1(nil, nil)?.description ?? "nothing") // nothing
-            print(solution1(ListNode(0), nil)?.description ?? "nothing") // 0,
-            print(solution1(ListNode(1), nil)?.description ?? "nothing") // 1,
-            print(solution1(nil, ListNode(1))?.description ?? "nothing") // 1,
-            print(solution1(ListNode(0), ListNode(0))?.description ?? "nothing") // 0,
-            print(solution1(ListNode(0), ListNode(1))?.description ?? "nothing") // 1,
-            print(solution1(ListNode(1), ListNode(0))?.description ?? "nothing") // 1,
-            print(solution1(ListNode(1), ListNode(1))?.description ?? "nothing") // 2,
+            print(solution2(nil, nil)?.description ?? "nothing") // nothing
+            print(solution2(ListNode(0), nil)?.description ?? "nothing") // 0,
+            print(solution2(ListNode(1), nil)?.description ?? "nothing") // 1,
+            print(solution2(nil, ListNode(1))?.description ?? "nothing") // 1,
+            print(solution2(ListNode(0), ListNode(0))?.description ?? "nothing") // 0,
+            print(solution2(ListNode(0), ListNode(1))?.description ?? "nothing") // 1,
+            print(solution2(ListNode(1), ListNode(0))?.description ?? "nothing") // 1,
+            print(solution2(ListNode(1), ListNode(1))?.description ?? "nothing") // 2,
         }
         
         do {
             let l1 = ListNode(3, ListNode(2, ListNode(1)))
             let l2 = ListNode(6, ListNode(5, ListNode(4)))
-            print(solution1(l1, l2)?.description ?? "nothing") // 9, 7, 5
+            print(solution2(l1, l2)?.description ?? "nothing") // 9, 7, 5
         }
         
         do {
             let l1 = ListNode(1)
             let l2 = ListNode(9, ListNode(1))
-            print(solution1(l1, l2)?.description ?? "nothing") // 0, 2
+            print(solution2(l1, l2)?.description ?? "nothing") // 0, 2
         }
         
         do {
             let l1 = ListNode(1)
             let l2 = ListNode(9, ListNode(9))
-            print(solution1(l1, l2)?.description ?? "nothing") // 0, 0, 1
+            print(solution2(l1, l2)?.description ?? "nothing") // 0, 0, 1
         }
     }
 }
