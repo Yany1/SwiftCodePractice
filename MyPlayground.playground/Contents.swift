@@ -504,7 +504,7 @@ class AddTwoNumbers {
         return listAdd(l1, l2, 0)
     }
     
-    func testAddTwoNumbers() {
+    func test() {
         print("test addTwoNumbers:");
         
         do {
@@ -535,6 +535,68 @@ class AddTwoNumbers {
             let l2 = ListNode(9, ListNode(9))
             print(solution1(l1, l2)?.description ?? "nothing") // 0, 0, 1
         }
+    }
+}
+
+/* ========================================================================= */
+
+// 24. Swap Nodes in Pairs
+// https://leetcode.com/problems/swap-nodes-in-pairs/
+
+class SwapPairs {
+    class ListNode {
+        public let val: Int
+        public var next: ListNode?
+        public var description: String { get{ return "\(val), \(next?.description ?? "")" } }
+        public init() { self.val = 0; self.next = nil; }
+        public init(_ val: Int) { self.val = val; self.next = nil; }
+        public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+    }
+    
+    // T=O(N), S=O(N) (recursion)
+    func solution1(_ head: ListNode?) -> ListNode? {
+        guard let head = head else {
+            return nil
+        }
+        if head.next == nil {
+            return head
+        }
+        
+        let nextOfNext = solution1(head.next?.next)
+        let next = head.next
+        next?.next = head
+        head.next = nextOfNext
+        
+        return next
+    }
+    
+    // T=O(N), S=O(1) (iteration, excluding the list)
+    func solution2(_ head: ListNode?) -> ListNode? {
+        var dummy: ListNode? = ListNode(), prev = dummy, curr = head
+        dummy?.next = head
+        
+        while curr != nil && curr?.next != nil {
+            prev?.next = curr?.next
+            curr?.next = prev?.next?.next
+            prev?.next?.next = curr
+            
+            prev = curr
+            curr = curr?.next
+        }
+        
+        return dummy?.next
+    }
+    
+    func test() {
+        print("test swapPairs:");
+        
+        print(solution2(nil)?.description ?? "nothing") // nothing
+        print(solution2(ListNode(0))?.description ?? "nothing") // 0
+        print(solution2(ListNode(0, ListNode(1)))?.description ?? "nothing") // 1, 0
+        print(solution2(ListNode(0, ListNode(1, ListNode(2))))?.description ?? "nothing") // 1, 0, 2
+        print(solution2(ListNode(0, ListNode(1, ListNode(2, ListNode(3)))))?.description ?? "nothing") // 1, 0, 3, 2,
+        print(solution2(ListNode(0, ListNode(1, ListNode(2, ListNode(3, ListNode(4))))))?.description ?? "nothing") // 1, 0, 3, 2, 4,
+        print(solution2(ListNode(0, ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5)))))))?.description ?? "nothing") // 1, 0, 3, 2, 5, 4
     }
 }
 
