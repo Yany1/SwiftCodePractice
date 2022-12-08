@@ -1,9 +1,32 @@
 
+public class ListNode {
+    public var val: Int
+    public var next: ListNode?
+    public var description: String { get{ return "\(val), \(next?.description ?? "")" } }
+    public init() { self.val = 0; self.next = nil; }
+    public init(_ val: Int) { self.val = val; self.next = nil; }
+    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+}
+
+public class TreeNode {
+    public var val: Int
+    public var left: TreeNode?
+    public var right: TreeNode?
+    public init() { self.val = 0; self.left = nil; self.right = nil; }
+    public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+    public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+        self.val = val
+        self.left = left
+        self.right = right
+    }
+}
+
+/* ========================================================================= */
+
 //1. Two Sum
 //https://leetcode.com/problems/two-sum/
 
 class TwoSum {
-    
     
     // My answer, hash table + two iterations
     // T=O(n), S=O(n)
@@ -621,10 +644,63 @@ class SwapPairs {
 
 /* ========================================================================= */
 
+// 102. Binary Tree Level Order Traversal
+// https://leetcode.com/problems/binary-tree-level-order-traversal/
+
+class LevelOrder {
+    
+    var levels: [[Int]] = []
+    
+    func dfs(_ node: TreeNode?, depth: Int) {
+        guard let node = node else { return }
+        
+        if levels.count <= depth {
+            levels.append([node.val])
+        } else {
+            levels[depth].append(node.val)
+        }
+        
+        dfs(node.left, depth: depth + 1)
+        dfs(node.right, depth: depth + 1)
+    }
+    
+    // DFS + Array, T=O(N), S=O(logN)
+    func solution1(_ root: TreeNode?) -> [[Int]] {
+        levels = []
+        dfs(root, depth: 0)
+        return levels
+    }
+    
+    func test() {
+        print("test level order")
+        do {
+            print("case 1: ", solution1(nil)) // []
+        }
+        
+        do {
+            let n1 = TreeNode(1, nil, nil)
+            
+            print("case 2: ", solution1(n1)) // [[1]]
+        }
+        do {
+            let n5 = TreeNode(7, nil, nil)
+            let n4 = TreeNode(15, nil, nil)
+            let n3 = TreeNode(20, n4, n5)
+            let n2 = TreeNode(9, nil, nil)
+            let n1 = TreeNode(3, n2, n3)
+            
+            print("case 3: ", solution1(n1)) // [[3], [9, 20], [15, 7]]
+        }
+    }
+}
+
+/* ========================================================================= */
+
 var greeting = "Hello, player"
 
 print(greeting)
 
 //twoSumTest()
 //countNodesTest()
-testMaxDepth()
+//testMaxDepth()
+LevelOrder().test()
