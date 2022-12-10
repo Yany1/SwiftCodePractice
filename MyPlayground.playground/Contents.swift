@@ -696,9 +696,78 @@ class LevelOrder {
 
 /* ========================================================================= */
 
-var greeting = "Hello, player"
+// Sorting
 
-print(greeting)
+class Sort {
+    
+    public static func quick(_ array: [Int]) -> [Int] {
+        guard array.count > 1 else {
+            return array
+        }
+        
+        let lever = array.last!
+        
+        var left: [Int] = [], right: [Int] = []
+        
+        for num in array.prefix(upTo: array.endIndex - 1) {
+            if num < lever {
+                left.append(num)
+            } else {
+                right.append(num)
+            }
+        }
+        
+        return quick(left) + [lever] + quick(right)
+    }
+    
+    public static func merge(_ array: [Int]) -> [Int] {
+        if array.count <= 1 {
+            return array
+        }
+
+        let left = merge(Array(array[..<(array.count / 2)]))
+        let right = merge(Array(array[(array.count / 2)...]))
+        
+        var sorted: [Int] = []
+        var i = 0, j = 0
+        while i < left.count && j < right.count {
+            if left[i] < right[j] {
+                sorted.append(left[i])
+                i += 1
+            } else {
+                sorted.append(right[j])
+                j += 1
+            }
+        }
+        
+        if i < left.count {
+            sorted.append(contentsOf: left[i...])
+        } else if j < right.count {
+            sorted.append(contentsOf: right[j...])
+        }
+        
+        return sorted
+    }
+    
+    
+    public static func test() {
+//        print(quick([]))
+//        print(quick([0]))
+//        print(quick([1, 3, 2]))
+//        print(quick([3, 4, 7, 13, 22]))
+//        print(quick([31, 24, 17, -13, -22]))
+        
+        print(merge([]))
+        print(merge([0]))
+        print(merge([1, 3, 2]))
+        print(merge([3, 4, 7, 13, 22]))
+        print(merge([31, 24, 17, -13, -22]))
+    }
+}
+
+/* ========================================================================= */
+
+print("Hello, player")
 
 //twoSumTest()
 //countNodesTest()
