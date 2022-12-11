@@ -767,6 +767,56 @@ class Sort {
 
 /* ========================================================================= */
 
+// 371. Sum of Two Integers
+// https://leetcode.com/problems/sum-of-two-integers/
+
+class GetSum {
+    
+    // Constraint: no explicit + or -
+    func solution1(_ a: Int, _ b: Int) -> Int {
+        var a = UInt(bitPattern: a), b = UInt(bitPattern: b)
+        var sum: UInt = 0, carry: UInt = 0
+        while (a != 0 && b != 0) || carry != 0 {
+            let bitA = a & 1
+            let bitB = b & 1
+            sum = sum | (bitA ^ bitB) ^ carry
+            carry = (carry != 0) ? (bitA | bitB) : (bitA & bitB)
+            a = a >> 1
+            b = b >> 1
+            sum = sum << 1
+        }
+        
+        return Int(bitPattern: sum)
+    }
+    
+    func solution2(_ a: Int, _ b: Int) -> Int {
+        return b == 0 ? a : solution2(a ^ b, (a & b) << 1)
+    }
+    
+    func solution3(_ a: Int, _ b: Int) -> Int {
+        var a = a, b = b
+        while b != 0 {
+            let c = a & b
+            a = a ^ b
+            b = c << 1
+        }
+        return a
+    }
+    
+    func test() {
+        print("test get sum")
+        print("case 0:", solution3(0, 0)) // 0
+        print("case 1:", solution3(0, 1)) // 1
+        print("case 2:", solution3(1, 0)) // 1
+        print("case 3:", solution3(0, -1)) // -1
+        print("case 4:", solution3(1, -1)) // 0
+        print("case 5:", solution3(1, 2)) // 3
+        print("case 6:", solution3(3, 2)) // 5
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
