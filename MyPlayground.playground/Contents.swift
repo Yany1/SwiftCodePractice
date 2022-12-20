@@ -870,6 +870,37 @@ class GroupAnagrams {
 
 /* ========================================================================= */
 
+// 179. Largest Number
+// https://leetcode.com/problems/largest-number/
+
+class LargestNumber {
+    func solution1(_ nums: [Int]) -> String {
+        let sorted = nums.sorted { (l: Int, r: Int) in
+            let a1 = Int("\(l)" + "\(r)"), a2 = Int("\(r)" + "\(l)")
+            return a1! > a2!
+        }
+        
+        let largest = sorted.reduce("") { $0 + "\($1)" }
+        if let answer = Int(largest), answer == 0 {
+            return answer.description
+        } else {
+            return largest
+        }
+    }
+    
+    func test() {
+        print(solution1([0])) // "0"
+        print(solution1([0, 0])) // "0"
+        print(solution1([18, 199])) // "19918"
+        print(solution1([188, 1777, 19])) // "191881777"
+        print(solution1([10,2])) // "210"
+        print(solution1([3,30,34,5,9])) // "9534330"
+        print(solution1([999999998,999999997,999999999])) // "9534330"
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
