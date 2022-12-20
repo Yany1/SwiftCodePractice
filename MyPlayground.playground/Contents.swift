@@ -817,6 +817,59 @@ class GetSum {
 
 /* ========================================================================= */
 
+// 49. Group Anagrams
+// https://leetcode.com/problems/group-anagrams/
+
+class GroupAnagrams {
+    let alpha = [
+        Character("a") : 2, Character("b") : 3,
+        Character("c") : 5, Character("d") : 7,
+        Character("e") : 11, Character("f") : 13,
+        Character("g") : 17, Character("h") : 19,
+        Character("i") : 23, Character("j") : 29,
+        Character("k") : 31, Character("l") : 37,
+        Character("m") : 41, Character("n") : 47,
+        Character("o") : 53, Character("p") : 59,
+        Character("q") : 61, Character("r") : 67,
+        Character("s") : 71, Character("t") : 73,
+        Character("u") : 79, Character("v") : 83,
+        Character("w") : 89, Character("x") : 97,
+        Character("y") : 101, Character("z") : 103,
+    ]
+    
+    func sig(_ str: String) -> Double {
+        var sig = 1.0
+        for c in str {
+            sig *= Double(alpha[c] ?? 0)
+        }
+        
+        return sig
+    }
+    
+    func solution1(_ strs: [String]) -> [[String]] {
+        var mapping: [Double: [String]] = [:]
+        for str in strs {
+            if let array = mapping[Double(sig(str))] {
+                mapping[Double(sig(str))] = array + [str]
+            } else {
+                mapping[Double(sig(str))] = [str]
+            }
+        }
+        
+        mapping.removeValue(forKey: 0.0)
+        return mapping.map { $0.value }
+    }
+    
+    func test() {
+        print(solution1([])) // []
+        print(solution1(["a"])) // [["a"]]
+        print(solution1(["#"])) // [["a"]]
+        print(solution1(["eat", "tea", "zzzzzzzzzzzz"])) // [["eat", "tea"], ["bob"]]
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
