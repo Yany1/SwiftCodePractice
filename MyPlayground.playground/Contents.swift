@@ -901,6 +901,48 @@ class LargestNumber {
 
 /* ========================================================================= */
 
+// 26. Remove Duplicates from Sorted Array
+// https://leetcode.com/problems/remove-duplicates-from-sorted-array/
+
+class RemoveDuplicates {
+    func solution1(_ nums: inout [Int]) -> Int {
+        var i = 0, j = 0, index = 0
+        while i < nums.count && index < nums.count {
+            nums[index] = nums[i]
+            index += 1
+            
+            j = i
+            while j < nums.count && nums[j] == nums[i] {
+                j += 1
+            }
+            i = j
+        }
+        return index
+    }
+    
+    func test() {
+        do {
+            var a: [Int] = []
+            let index = solution1(&a)
+            print("\(index), \(a)") // 0, []
+        }
+        
+        do {
+            var a: [Int] = [0, 0, 0, 0]
+            let index = solution1(&a)
+            print("\(index), \(a)") // 1, [0, 0, 0, 0]
+        }
+
+        do {
+            var a: [Int] = [1, 1, 2, 3, 3]
+            let index = solution1(&a)
+            print("\(index), \(a)") // 3, [1, 2, 3, 3, 3]
+        }
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
