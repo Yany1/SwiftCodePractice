@@ -943,6 +943,42 @@ class RemoveDuplicates {
 
 /* ========================================================================= */
 
+// 46. Permutations
+// https://leetcode.com/problems/permutations/
+
+class Permute {
+    func permute(withRoot root: Int, leaves: [Int]) -> [[Int]] {
+        guard !leaves.isEmpty else {
+            return [[root]]
+        }
+
+        var p: [[Int]] = []
+        for i in 0..<leaves.count {
+            p + permute(withRoot: leaves[i], leaves: (Array(leaves[0..<i]) + Array(leaves[(i + 1)..<leaves.count])))
+        }
+
+        return p.map { [root] + $0 }
+    }
+    
+    func solution1(_ nums: [Int]) -> [[Int]] {
+        var p: [[Int]] = []
+        for i in 0..<nums.count {
+            p + permute(withRoot: nums[i], leaves: (Array(nums[0..<i]) + Array(nums[(i + 1)..<nums.count])))
+        }
+
+        return p
+    }
+    
+    func test() {
+//        print(solution1([])) // []
+        print(solution1([0])) // [[0]]
+//        print(solution1([0, 1])) // [[0, 1], [1, 0]]
+//        print(solution1([0, 1, 2])) // [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
