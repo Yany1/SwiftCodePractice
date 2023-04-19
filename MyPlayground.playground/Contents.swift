@@ -1,8 +1,27 @@
 
-public class ListNode {
+public class List<T> {
+    public var this: T?
+    public var rest: List<Any>?
+    public init(_ this: T?, _ rest: List<Any>?) { self.this = this; self.rest = rest }
+    public init() { this = nil; rest = nil }
+}
+
+extension List: CustomStringConvertible {
+    public var description: String {
+        let this = this == nil ? "nil" : String(describing: this!)
+        let rest = rest == nil ? "nil" : String(describing: rest!)
+        return "(\(this)) -> \(rest)"
+    }
+}
+
+public class ListNode: CustomStringConvertible {
     public var val: Int
     public var next: ListNode?
-    public var description: String { get{ return "\(val), \(next?.description ?? "")" } }
+    public var description: String {
+        get{
+            return (next == nil) ? ("\(val)") : ("\(val), \(String(describing: next!))")
+        }
+    }
     public init() { self.val = 0; self.next = nil; }
     public init(_ val: Int) { self.val = val; self.next = nil; }
     public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
@@ -749,14 +768,20 @@ class Sort {
         return sorted
     }
     
+//    public static func heap(_ array: [Int]) -> [Int] {
+//        var heap: [Int] = []
+//        for num in array {
+//            heap.append(num)
+//
+//            var i = heap.count - 1
+//            while i != 0 && heap[(i - 1) / 2] > heap[i] {
+//                heap.swapAt((i - 1) / 2, i)
+//                i = (i - 1) / 2
+//            }
+//        }
+//    }
     
     public static func test() {
-//        print(quick([]))
-//        print(quick([0]))
-//        print(quick([1, 3, 2]))
-//        print(quick([3, 4, 7, 13, 22]))
-//        print(quick([31, 24, 17, -13, -22]))
-        
         print(merge([]))
         print(merge([0]))
         print(merge([1, 3, 2]))
@@ -979,9 +1004,153 @@ class Permute {
 
 /* ========================================================================= */
 
+// 230. Kth Smallest Element in a BST
+// https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+
+class KthSmallest {
+    enum KthSmallestStatus {
+        // contains the kth smallest element
+        case has(Int)
+        // doesn't have enough element, contains the number of nodes
+        case notEnough(Int)
+    }
+    
+    func traverse(_ root: TreeNode?, _ k: Int) -> KthSmallestStatus {
+        guard let root = root else {
+            return .notEnough(0)
+        }
+        
+        let left = traverse(root.left, k)
+        switch left {
+        case .has(_):
+            return left
+        case .notEnough(let leftCount):
+            if k - leftCount > 1 {
+                let right = traverse(root.right, k - leftCount - 1)
+                switch right {
+                case .has(_):
+                    return right
+                case .notEnough(let rightCount):
+                    return .notEnough(leftCount + rightCount + 1)
+                }
+            } else {
+                return .has(root.val)
+            }
+        }
+    }
+    
+    func solution1(_ root: TreeNode?, _ k: Int) -> Int {
+        switch traverse(root, k) {
+        case .has(let k):
+            return k
+        
+        // not possible
+        case .notEnough(_):
+            return -1
+        }
+    }
+    
+    func test() {
+        print(solution1(nil, 1)) // -1
+        print(solution1(TreeNode(0), 1)) // 0
+        print(solution1(TreeNode(3, TreeNode(1, nil, TreeNode(2)), TreeNode(4)), 1)) // 1
+        print(solution1(TreeNode(3, TreeNode(1, nil, TreeNode(2)), TreeNode(4)), 2)) // 2
+        print(solution1(TreeNode(3, TreeNode(1, nil, TreeNode(2)), nil), 3)) // 3
+        print(solution1(TreeNode(3, TreeNode(1, nil, TreeNode(2)), TreeNode(4)), 4)) // 4
+        
+        print(solution1(TreeNode(3, TreeNode(2, TreeNode(1), nil), nil), 3)) // 3
+        print(solution1(TreeNode(5, TreeNode(3, TreeNode(2, TreeNode(1), nil), TreeNode(4)), TreeNode(6)), 3)) // 3
+        print(solution1(TreeNode(5, TreeNode(3, TreeNode(2, TreeNode(1), nil), TreeNode(4)), TreeNode(6)), 4)) // 4
+    }
+}
+
+/* ========================================================================= */
+
+// 415. Add Strings
+// https://leetcode.com/problems/add-strings/
+
+class AddStrings {
+    func solution1(_ num1: String, _ num2: String) -> String {
+        var carry = 0
+        var answer = ""
+        let length = min(num1.count, num2.count)
+        
+        var i = 1
+        while i <= length {
+            let n1 = Int(String(num1[String.Index(utf16Offset: (num1.count - i), in: num1)]))!
+            let n2 = Int(String(num2[String.Index(utf16Offset: (num2.count - i), in: num2)]))!
+            answer.insert(String((n1 + n2 + carry) % 10).first!, at: answer.startIndex)
+            carry = (n1 + n2 + carry) / 10
+            
+            i += 1
+        }
+        
+        while i <= num1.count {
+            let n1 = Int(String(num1[String.Index(utf16Offset: (num1.count - i), in: num1)]))!
+            answer.insert(String((n1 + carry) % 10).first!, at: answer.startIndex)
+            carry = (n1 + carry) / 10
+            
+            i += 1
+        }
+        
+        while i <= num2.count {
+            let n2 = Int(String(num2[String.Index(utf16Offset: (num2.count - i), in: num2)]))!
+            answer.insert(String((n2 + carry) % 10).first!, at: answer.startIndex)
+            carry = (n2 + carry) / 10
+            
+            i += 1
+        }
+        
+        if carry > 0 {
+            answer.insert(String(carry).first!, at: answer.startIndex)
+        }
+        return answer
+    }
+    
+    func solution2(_ num1: String, _ num2: String) -> String {
+        var res = ""
+        var i = num1.count - 1, j = num2.count - 1, carry = 0
+        
+        let num1Array = Array(num1), num2Array = Array(num2)
+        
+        while i >= 0 || j >= 0 || carry > 0 {
+            let n1 = i >= 0 ? Int(String(num1Array[i]))! : 0
+            let n2 = j >= 0 ? Int(String(num2Array[j]))! : 0
+            let sum = n1 + n2 + carry
+            
+            res = "\(sum % 10)" + res
+            carry = sum / 10
+            
+            i -= 1
+            j -= 1
+        }
+        
+        return res
+    }
+    
+    func test() {
+        print(solution1("", "")) // ""
+        print(solution1("0", "0")) // "0"
+        print(solution1("1", "0")) // "1"
+        print(solution1("0", "1")) // "1"
+        print(solution1("4", "5")) // "9"
+        print(solution1("9", "1")) // "10"
+        print(solution1("1", "99")) // "100"
+    }
+}
+
+/* ========================================================================= */
+
 print("Hello, player")
 
 //twoSumTest()
 //countNodesTest()
 //testMaxDepth()
-LevelOrder().test()
+//LevelOrder().test()
+//GetSum().test()
+//GroupAnagrams().test()
+//LargestNumber().test()
+//RemoveDuplicates().test()
+//KthSmallest().test()
+
+AddStrings().test()
